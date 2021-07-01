@@ -21,7 +21,9 @@ from mne import  pick_types
 import mne
 import pandas as pd
 
-
+"""
+Extract the features for each electrode separately
+"""
 
 ### Coefficient Variation
 def coeff_var(a):
