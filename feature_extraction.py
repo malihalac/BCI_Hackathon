@@ -3,6 +3,8 @@ This feature_extraction.py script is based on (modified)
 https://github.com/BCI-HCI-IITKGP/Cognitive-Mental-workload-Classification/blob/master/FeatureExtraction.ipynb
 '''
 
+import os
+import sys
 import csv
 import pywt
 import pyedflib
@@ -279,9 +281,7 @@ def first_diff_max(arr):
 
 
 
-if __name__ == '__main__':
-    data_file = "/Users/malihalac/desktop/BCI_Hackathon/github/BCI_Hackathon/edf_data/P01S2DifficultData.edf"
-
+def run_all(data_file, save_path, data_name):
     raw = read_raw_edf(data_file, preload=True, verbose=False)
     picks = pick_types(raw.info, eeg=True)
     data = raw.get_data(picks=picks)
@@ -300,13 +300,13 @@ if __name__ == '__main__':
     # Hjorth Parameters
     activity, mobility, complexity = hjorth(data)
     # Kurtosis
-    kurtosis = kurtosis(data)
+    kurtosis_ = kurtosis(data)
     # Second Difference Mean
     sec_dif_mean = secDiffMean(data)
     # Second Difference Max
     sec_dif_max = secDiffMax(data)
     # Skewness
-    skewness = skewness(data)
+    skewness_ = skewness(data)
     # First Difference Mean
     first_dif_mean = first_diff_mean(data)
     # First Difference Max
@@ -324,10 +324,10 @@ if __name__ == '__main__':
                     "Hjorth activity": activity,
                     "Hjorth mobility": mobility,
                     "Hjorth complexity": complexity,
-                    "Kurtosis": kurtosis,
+                    "Kurtosis": kurtosis_,
                     "Second difference mean": sec_dif_mean,
                     "Second difference max": sec_dif_max,
-                    "Skewness": skewness,
+                    "Skewness": skewness_,
                     "First difference mean": first_dif_mean,
                     "First difference max": first_dif_max
                         }
@@ -338,8 +338,27 @@ if __name__ == '__main__':
     ####################################################################
 
     df = pd.DataFrame.from_dict(features_dict)
-    features_csv_file = "features.csv"
+    features_csv_file = save_path + "/" + data_name + "features.csv"
     df.to_csv(features_csv_file, index=True)
+
+    return
+
+
+
+
+if __name__ == '__main__':
+    directory = "/Users/malihalac/desktop/BCI_Hackathon/github/BCI_Hackathon/edf_data/"
+    save_path = "/Users/malihalac/desktop/BCI_Hackathon/github/BCI_Hackathon/features"
+    for file in os.listdir(directory):
+        if ".edf" in file:
+            file_name = file.strip(".edf")
+            file_path = directory + file
+
+            print()
+            print("Reading the file:", file_name)
+            run_all(file_path,save_path,file_name)
+            print("Extracted the futures for", file_name)
+            print()
 
 
 
