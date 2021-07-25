@@ -211,8 +211,9 @@ for epoch_sec in [0.25, 0.0625]:
               X_train, X_test = convert_mesh_44(X_train, ch_names, mioschema), convert_mesh_44(X_test, ch_names, mioschema)
 
           return X_train, y_train, X_test, y_test
-
-          nomeschema = "13_ele"
+      
+      nomeschema = "13_ele"
+      mioschema = ['F7','F5','F3','F1','F2','F4','F6','AF3','AFz','AF4','Fp1','Fp2', "Fz"]
 
       ##   GET PREPROCESSED DATA FROM FILE  (OR PREPROCES IT ON THE SPOT)
       preprocessed_data_file = './preprocessed_dataset/dataIMM_epochsec-'+str(epoch_sec)+'_schema_'+nomeschema+'_P{:02d}'.format(i)+'.h5'
@@ -229,7 +230,7 @@ for epoch_sec in [0.25, 0.0625]:
       else:
           print('false')
           X,y,ch_names = get_data(FNAMES, epoch_sec=epoch_sec)
-          X_train, y_train, X_test, y_test = prepare_data(X, y)
+          X_train, y_train, X_test, y_test = prepare_data(X, y, ch_names, mioschema)
           del X
           del y
           hf = h5py.File(preprocessed_data_file, 'w')
